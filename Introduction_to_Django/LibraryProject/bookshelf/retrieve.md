@@ -1,4 +1,4 @@
 from bookshelf.models import Book
-Book.objects.all()
+Book.objects.get(title="1984")
 
 <!--<QuerySet [<Book: Book object (1)>]> -->
