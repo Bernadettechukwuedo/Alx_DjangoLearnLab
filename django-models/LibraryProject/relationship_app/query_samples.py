@@ -6,11 +6,12 @@ for book in books:
     print(book)
 
 # List all books in a library.
-library = Library.objects.get(name="Central Library")
+library_name = "National Library"
+library = Library.objects.get(name=library_name)
 books = library.books.all()
 for book in books:
     print(book)
 
 # Retrieve the librarian for a library.
-librarian = Librarian.objects.get(library__name="National Library")
+librarian = Librarian.objects.get(library__name=library_name)
 print(librarian)
