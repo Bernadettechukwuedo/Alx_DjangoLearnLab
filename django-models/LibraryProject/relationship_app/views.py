@@ -5,6 +5,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
 
 
 # List view.
@@ -39,3 +40,30 @@ def loginView(request):
         else:
             return redirect("login")
     return render(request, "relationship_app/login.html")
+
+
+def is_Admin(user):
+    return user.userprofile.role == "Admin"
+
+
+@user_passes_test(is_Admin)
+def admin_view(request):
+    pass
+
+
+def is_Librarian(user):
+    return user.userprofile.role == "Librarian"
+
+
+@user_passes_test(is_Librarian)
+def librarian_view(request):
+    pass
+
+
+def is_Member(user):
+    return user.userprofile.role == "Member"
+
+
+@user_passes_test(is_Member)
+def member_view(request):
+    pass
