@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
 
 
 # List view.
@@ -50,7 +51,7 @@ def is_Admin(user):
 
 @user_passes_test(is_Admin)
 def admin_view(request):
-    pass
+    return HttpResponse("Welcome, Admin!")
 
 
 def is_Librarian(user):
@@ -61,7 +62,7 @@ def is_Librarian(user):
 
 @user_passes_test(is_Librarian)
 def librarian_view(request):
-    pass
+    return HttpResponse("Welcome, Librarian!")
 
 
 def is_Member(user):
@@ -72,4 +73,4 @@ def is_Member(user):
 
 @user_passes_test(is_Member)
 def member_view(request):
-    pass
+    return HttpResponse("Welcome, Member!")
