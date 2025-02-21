@@ -43,7 +43,9 @@ def loginView(request):
 
 
 def is_Admin(user):
-    return user.userprofile.role == "Admin"
+    if hasattr(user, "userprofile"):
+        return user.userprofile.role == "Admin"
+    return False
 
 
 @user_passes_test(is_Admin)
@@ -52,7 +54,9 @@ def admin_view(request):
 
 
 def is_Librarian(user):
-    return user.userprofile.role == "Librarian"
+    if hasattr(user, "userprofile"):
+        return user.userprofile.role == "Librarian"
+    return False
 
 
 @user_passes_test(is_Librarian)
@@ -61,7 +65,9 @@ def librarian_view(request):
 
 
 def is_Member(user):
-    return user.userprofile.role == "Member"
+    if hasattr(user, "userprofile"):
+        return user.userprofile.role == "Member"
+    return False
 
 
 @user_passes_test(is_Member)
