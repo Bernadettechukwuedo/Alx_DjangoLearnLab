@@ -5,7 +5,8 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import user_passes_test, login_required, permission_required
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 
 
@@ -86,13 +87,17 @@ def librarian_view(request):
 def member_view(request):
     return render(request, "relationship_app/member_view.html", {"role": "Member"})
 
+
 @permission_required("relationship_app.can_add_book")
 def add_book(request):
     pass
 
+
 @permission_required("relationship_app.can_change_book")
 def edit_book(request):
     pass
+
+
 @permission_required("relationship_app.can_delete_book")
 def delete_book(request):
     pass
