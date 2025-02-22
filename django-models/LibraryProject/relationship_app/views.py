@@ -69,13 +69,13 @@ def is_Member(user):
 
 @login_required
 @user_passes_test(is_Admin)
-def Admin(request):
+def admin_view(request):
     return render(request, "relationship_app/admin_view.html", {"role": "Admin"})
 
 
 @login_required
 @user_passes_test(is_Librarian)
-def Librarian(request):
+def librarian_view(request):
     return render(
         request, "relationship_app/librarian_view.html", {"role": "Librarian"}
     )
@@ -83,5 +83,5 @@ def Librarian(request):
 
 @login_required
 @user_passes_test(is_Member)
-def Member(request):
+def member_view(request):
     return render(request, "relationship_app/member_view.html", {"role": "Member"})
