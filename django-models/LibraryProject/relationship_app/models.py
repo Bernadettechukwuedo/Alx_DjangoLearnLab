@@ -47,8 +47,3 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
-
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:  # Only when a new User is created
-            UserProfile.objects.create(user=instance)

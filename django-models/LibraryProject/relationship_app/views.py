@@ -5,7 +5,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.http import HttpResponse
 
 
@@ -44,27 +44,42 @@ def loginView(request):
 
 
 def is_Admin(user):
-    return hasattr(user, "userprofile") and user.userprofile.role == "Admin"
+    return (
+        user.is_authenticated
+        and hasattr(user, "userprofile")
+        and user.userprofile.role == "Admin"
+    )
 
 
+@login_required
 @user_passes_test(is_Admin)
 def admin_view(request):
     return HttpResponse("Welcome, Admin!")
 
 
 def is_Librarian(user):
-    return hasattr(user, "userprofile") and user.userprofile.role == "Librarian"
+    return (
+        user.is_authenticated
+        and hasattr(user, "userprofile")
+        and user.userprofile.role == "Librarian"
+    )
 
 
+@login_required
 @user_passes_test(is_Librarian)
 def librarian_view(request):
     return HttpResponse("Welcome, Librarian!")
 
 
 def is_Member(user):
-    return hasattr(user, "userprofile") and user.userprofile.role == "Member"
+    return (
+        user.is_authenticated
+        and hasattr(user, "userprofile")
+        and user.userprofile.role == "Member"
+    )
 
 
+@login_required
 @user_passes_test(is_Member)
 def member_view(request):
     return HttpResponse("Welcome, Member!")
