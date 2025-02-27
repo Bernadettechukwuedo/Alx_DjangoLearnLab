@@ -8,6 +8,12 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(blank=True, null=True)
     profile_photo = models.ImageField(upload_to="profile/")
 
+
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=100)
+    publication_year = models.IntegerField()
+
     class Meta:
         permissions = [
             ("can_view", "can_view"),
