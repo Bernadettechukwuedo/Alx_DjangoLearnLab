@@ -8,6 +8,14 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(blank=True, null=True)
     profile_photo = models.ImageField(upload_to="profile/")
 
+    class Meta:
+        permissions = [
+            ("can_view", "can_view"),
+            ("can_create", "can_create"),
+            ("can_edit", "can_edit"),
+            ("can_delete", "can_delete"),
+        ]
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(
