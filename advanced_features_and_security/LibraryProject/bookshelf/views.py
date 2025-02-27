@@ -5,6 +5,11 @@ from django.views import View
 # Create your views here.
 
 
+class book_list(View):
+    def get(self, request):
+        return render(request, "book_list.html")
+
+
 @permission_required("bookshelf.can_edit", raise_exception=True, login_url="/admin/")
 def can_edit(request):
     return render(request, "can_edit.html")
