@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
     profile_photo = models.ImageField(upload_to="profile/")
 
 
-class CreateUserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager):
     def create_user(
         self,
         email,
