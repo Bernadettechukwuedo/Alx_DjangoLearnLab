@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import permission_required
 from django.views import View
-from .forms import Form
+from .forms import ExampleForm
 
 # Create your views here.
 
@@ -27,9 +27,9 @@ def can_delete(request):
 
 
 def form_example(request):
-    form = Form()
+    form = ExampleForm()
     if request.method == "POST":
-        form = Form(request.POST)
+        form = ExampleForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data["name"]
             print(name)

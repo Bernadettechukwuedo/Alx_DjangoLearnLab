@@ -1,5 +1,5 @@
 from django import forms
 
 
-class Form(forms.Form):
+class ExampleForm(forms.Form):
     name = forms.CharField(max_length=225)
