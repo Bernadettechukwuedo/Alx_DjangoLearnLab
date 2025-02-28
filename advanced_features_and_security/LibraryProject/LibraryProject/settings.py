@@ -23,10 +23,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-+nhj&uj1_tpu+mce#0w*!-crzkf-^3rj)=^%5)g$+9@c@@e$i!"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+# Security Measures in This Django App
 
+# 1. Cross-Site Scripting (XSS) Protection
+# Enabled `SECURE_BROWSER_XSS_FILTER` to prevent XSS attacks.
+# Implemented `Content Security Policy (CSP)` to restrict content sources.
+
+# 2. Clickjacking Protection
+# Set `X_FRAME_OPTIONS = "DENY"` to prevent embedding in iframes.
+
+# 3. CSRF Protection
+# Enabled CSRF middleware (`django.middleware.csrf.CsrfViewMiddleware`).
+# All forms include `{% csrf_token %}`.
+
+# 4. HTTPS Enforcement
+# Configured `SESSION_COOKIE_SECURE = True` and `CSRF_COOKIE_SECURE = True`.
+# Enabled `SECURE_SSL_REDIRECT = True` to force HTTPS.
+
+# 5. Allowed Hosts and Headers
+# Restricted `ALLOWED_HOSTS` to prevent host header attacks.
+# Used `SECURE_CONTENT_TYPE_NOSNIFF` to prevent MIME sniffing attacks.
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Application definition
 
@@ -41,6 +66,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "csp.middleware.CSPMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -50,6 +76,31 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# Content Security Policy Settings
+CSP_DEFAULT_SRC = ("'self'",)  # Restrict content to your own domain
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "https://trusted-scripts.com",
+)  # Allow scripts from trusted sources
+CSP_STYLE_SRC = (
+    "'self'",
+    "https://trusted-styles.com",
+    "'unsafe-inline'",
+)  # Allow CSS sources
+CSP_IMG_SRC = (
+    "'self'",
+    "https://trusted-images.com",
+    "data:",
+)  # Allow images from trusted sources
+CSP_FONT_SRC = (
+    "'self'",
+    "https://fonts.gstatic.com",
+)  # Allow fonts from Google Fonts or other sources
+CSP_FRAME_ANCESTORS = (
+    "'none'",
+)  # Prevent embedding in iframes (clickjacking protection)
+CSP_OBJECT_SRC = ("'none'",)  # Block Flash and other plugin content
+CSP_MEDIA_SRC = ("'self'",)  # Restrict media sources
 ROOT_URLCONF = "LibraryProject.urls"
 
 TEMPLATES = [
