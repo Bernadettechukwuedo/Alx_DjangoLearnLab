@@ -45,7 +45,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # 5. Allowed Hosts and Headers
 # Restricted `ALLOWED_HOSTS` to prevent host header attacks.
-# Used `SECURE_CONTENT_TYPE_NOSNIFF` to prevent MIME sniffing attacks.
+# Used `SECURE_CONTENT_TYPE_NOSNIFF` to prevent MIME sniffing attacks
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
