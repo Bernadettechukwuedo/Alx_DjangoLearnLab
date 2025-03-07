@@ -11,6 +11,7 @@ class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
+
 """
 Authentication & Permissions Configuration:
 
@@ -33,7 +34,8 @@ To use a token for authentication, include it in the request headers:
 Ensure to handle authentication errors properly, such as missing or invalid tokens.
 """
 
+
 class BookViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+
     queryset = Book.objects.all()
     serializer_class = BookSerializer
