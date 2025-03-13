@@ -1,1 +1,1 @@
-Advanced API Development with Django REST Framework
+Advanced API Development with Django REST Framework (DRF)
