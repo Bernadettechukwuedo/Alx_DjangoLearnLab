@@ -24,6 +24,7 @@ class BookTestCase(APITestCase):
         self.user = User.objects.create_user(
             username="test_user", password="test_password"
         )
+        self.client.login(username="test_user", password="test_password")
         self.token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
 
