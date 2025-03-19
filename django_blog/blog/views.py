@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from .forms import SignUpForm
+from .forms import SignUpForm, Post
 from django.contrib.auth.models import User
+from rest_framework import generics, permissions
+from .serializers import BlogSerializer
+from .models import Post
 
 
 # Create your views here.
@@ -66,3 +69,32 @@ def logout_user(request):
     logout(request)
     print("logged out successfully")
     return redirect("login")
+
+
+class ListView(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = BlogSerializer
+
+
+class DetailView(generics.RetrieveAPIView):
+    queryset = Post.objects.all()
+    serializer_class = BlogSerializer
+
+
+class CreateView(generics.CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = BlogSerializer
+    template_name = "blog/CreateView.html"
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class UpdateView(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class DeleteView(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = BlogSerializer
+    permission_classes = [permissions.IsAuthenticated]
