@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import Post
+from .models import Post, Comment
 
 
 class SignUpForm(UserCreationForm):
@@ -21,3 +21,19 @@ class PostForm(forms.ModelForm):
                 post.save()
 
             return post
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+
+        def save(self, commit=True, user=None, post=None):
+            comment = super().save(commit=False)
+
+            if comment:
+                comment.author = user
+                comment.post = post
+            if commit:
+                comment.save()
+
+            return comment
