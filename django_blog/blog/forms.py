@@ -7,7 +7,7 @@ class SignUpForm(UserCreationForm):
     email = forms.EmailField()
 
 
-class Post(forms.ModelForm):
+class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ["title", "content"]

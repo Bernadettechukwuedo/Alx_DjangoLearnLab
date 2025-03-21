@@ -9,10 +9,10 @@
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ Post.as_p }}
-            <button action="submit"> Submit </button>
-        </form>
+        <a href={% url 'logout' %}> Logout </a>
+     
+        <h2> {{ posts.title }} </h2>
+        <p> {{ posts.content }} </p>
+
     </body>
 </html>
