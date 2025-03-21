@@ -10,9 +10,10 @@ from django.views.generic import (
     ListView,
 )
 from django.urls import reverse_lazy
-from .serializers import BlogSerializer
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from .models import Post
+
 """
 Blog Application Views:
 
@@ -42,6 +43,7 @@ Templates:
 - `blog/post_update.html`: Form for updating a post.
 - `blog/post_delete.html`: Confirmation page for deleting a post.
 """
+
 
 # Create your views here.
 def profile(request):
