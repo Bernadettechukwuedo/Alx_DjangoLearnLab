@@ -53,6 +53,9 @@ This Django-powered blog application allows users to create, edit, and delete bl
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/yourblog.git
-   cd yourblog
+   git https://github.com/Bernadettechukwuedo/Alx_DjangoLearnLab.git
+   cd django_blog
+   cd blog
+  pip install -r requirements.txt
+   python manage.py runserver
    ```
