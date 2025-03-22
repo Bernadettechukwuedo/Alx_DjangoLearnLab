@@ -2,25 +2,31 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import Post, Comment
 
+from taggit.forms import TagField, TagWidget
+
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField()
 
 
 class PostForm(forms.ModelForm):
+
     class Meta:
         model = Post
-        fields = ["title", "content"]
+        fields = ["title", "content", "tags"]
+        widgets = {"tags": TagWidget()}
 
-        def save(self, commit=True, user=None):
-            post = super().save(commit=False)
+    def save(self, commit=True, user=None):
+        post = super().save(commit=False)
 
-            if post:
-                post.author = user
-            if commit:
-                post.save()
+        if user:  # Ensure user is set
+            post.author = user
+        if commit:
+            post.save()
+            self.save_m2m()
 
-            return post
+        return post
+
 
 class CommentForm(forms.ModelForm):
     class Meta:

@@ -1,18 +1,38 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <a href={% url 'logout' %}> Logout </a>
-     
-        <h2> {{ posts.title }} </h2>
-        <p> {{ posts.content }} </p>
+{% extends "blog/base.html" %}
+{% block content %}
+    <h2>{{ posts.title }}</h2>
+    <p>{{ posts.content }}</p>
+    <p><strong>Tags:</strong>
+        {% for tag in posts.tags.all %}
+            <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <a href="{% url 'update_view' posts.id %}">Edit</a>
+    <a href="{% url 'delete_view' posts.id %}">Delete</a>
+    <a href="{% url 'list_view' %}">Back to Posts</a>
 
-    </body>
-</html>
+    <h3>Comments:</h3>
+    {% for comment in posts.comments.all %}
+        <div class="comment">
+            <p><strong>{{ comment.author.username }}</strong> - {{ comment.created_at }}</p>
+            <p>{{ comment.content }}</p>
+            {% if comment.author == user %}
+                <a href="{% url 'update_comment' comment.id %}">Edit</a> |
+                <a href="{% url 'delete_comment' comment.id %}">Delete</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No comments yet. Be the first to comment!</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+    <h3>Add a Comment:</h3>
+    <form method="post" action="{% url 'create_comment' posts.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> to comment.</p>
+    {% endif %}
+{% endblock %}

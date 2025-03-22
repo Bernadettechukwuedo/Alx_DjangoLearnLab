@@ -12,7 +12,8 @@ from django.views.generic import (
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from .models import Post, Comment
+from .models import Post, Comment, Tag
+from django.db.models import Q
 
 """
 Blog Application Views:
@@ -124,7 +125,7 @@ class PostDetailView(DetailView):
 class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
     template_name = "blog/post_form.html"
-    fields = ["title", "content"]
+    form_class = PostForm
     success_url = reverse_lazy("list_view")
 
     def form_valid(self, form):
@@ -138,7 +139,7 @@ class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = "blog/post_update.html"
-    fields = ["title", "content"]
+    form_class = PostForm
     success_url = reverse_lazy("list_view")
 
     def form_valid(self, form):
@@ -217,3 +218,35 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return self.request.user == comment.author
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get("tag_slug")
+        self.tag = get_object_or_404(Tag, slug=tag_slug)
+        return Post.objects.filter(tags__in=[self.tag])  #filter posts by tag
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tag"] = self.tag
+        return context
+    
+def posts_by_tag(request, tag_name):
+    posts =  Post.objects.filter(tag__name__iexact=tag_name)
+    return render(request, 'blog/post_detail.html', {'posts': posts, 'tag_name': tag_name})
+
+def search_results(request):
+    query = request.GET.get('q', '')
+    results = Post.objects.none()
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__slug__icontains=query) |
+            Q(author__username__icontains=query)
+        ).distinct()
+
+    return render(request, 'blog/post_search.html', {'posts': results, 'query': query})

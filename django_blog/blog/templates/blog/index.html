@@ -1,1 +1,40 @@
-<h1>Hi</h1>
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    </head>
+    <body>
+        <form action="{% url 'search_results' %}" method="GET">
+            <input type="text" name="q" placeholder="Search posts..." required>
+            <button type="submit">Search</button>
+        </form>
+        <ul>
+            <li><a href="{% url 'list_view' %}"> Home </a></li>
+            <li><a href="{% url 'create_view' %}"> Create Post </a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}"> Logout </a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}"> Login</a></li>
+            <li><a href="{% url 'register' %}"> Register</a></li>
+            {% endif %}
+        </ul>
+        
+    <div class="content">
+        {% block content %}
+        <!-- Page-specific content goes here -->
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Django Blog</p>
+    </footer>
+
+
+    </body>
+</html>
