@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -31,7 +32,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    bio = models.CharField(max_length=250, blank=True)
+    bio = models.TextField( blank=True)
     profile_picture = models.ImageField(upload_to="profile", null=True, blank=True)
     followers = models.ManyToManyField(
         "self", symmetrical=False, related_name="following", blank=True
