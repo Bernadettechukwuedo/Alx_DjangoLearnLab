@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from .models import Post, Comment
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import IsAuthorOrReadOnly
+from rest_framework import permissions
 from rest_framework import serializers, filters, response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action, api_view, permission_classes
@@ -48,7 +49,7 @@ class PostViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
 
-    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated])
     def feed(self, request):
 
         following_users = request.user.following.all()
@@ -89,7 +90,7 @@ class CommentViewset(viewsets.ModelViewSet):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def feed_posts(request):
     followed_users = request.user.following.all()
     posts = Post.objects.filter(author__in=followed_users).order_by("-created_at")
