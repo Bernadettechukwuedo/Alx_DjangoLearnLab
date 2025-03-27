@@ -3,7 +3,17 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 
+User = get_user_model()
+class FollowSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
 
+    def validate_user_id(self, value):
+        """Verify user exists"""
+        try:
+            User.objects.get(id=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User not found")
+        return value
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField()
 

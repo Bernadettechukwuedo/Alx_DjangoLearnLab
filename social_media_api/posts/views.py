@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .serializers import PostSerializer, CommentSerializer
+from .serializers import PostSerializer, CommentSerializer, FeedPostSerializer
 from rest_framework import viewsets
 from .models import Post, Comment
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import IsAuthorOrReadOnly
-from rest_framework import serializers, filters
+from rest_framework import serializers, filters, response
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action, api_view, permission_classes
 
 # Create your views here.
 """
@@ -47,6 +48,27 @@ class PostViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
 
+    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
+    def feed(self, request):
+
+        following_users = request.user.following.all()
+        queryset = Post.objects.filter(author__in=following_users).order_by(
+            "-created_at"
+        )
+
+        # Paginate results
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = FeedPostSerializer(
+                page, many=True, context={"request": request}
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = FeedPostSerializer(
+            queryset, many=True, context={"request": request}
+        )
+        return response.Response(serializer.data)
+
 
 class CommentViewset(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by("-created_at")
@@ -64,3 +86,12 @@ class CommentViewset(viewsets.ModelViewSet):
             raise serializers.ValidationError({"post": "Invalid post ID."})
 
         serializer.save(author=self.request.user, post=post)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def feed_posts(request):
+    followed_users = request.user.following.all()
+    posts = Post.objects.filter(author__in=followed_users).order_by("-created_at")
+    serializer = PostSerializer(posts, many=True)
+    return response.Response({"posts": serializer.data})

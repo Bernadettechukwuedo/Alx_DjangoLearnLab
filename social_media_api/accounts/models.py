@@ -8,6 +8,7 @@ from django.contrib.auth.models import (
 
 from django.contrib.auth.models import AbstractUser
 
+
 # Create your models here.
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -32,10 +33,13 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    bio = models.TextField( blank=True)
+    bio = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to="profile", null=True, blank=True)
     followers = models.ManyToManyField(
-        "self", symmetrical=False, related_name="following", blank=True
+        "self", symmetrical=False, related_name="user_followers", blank=True
+    )
+    following = models.ManyToManyField(
+        "self", symmetrical=False, related_name="user_following", blank=True
     )
 
     is_active = models.BooleanField(default=True)
@@ -52,6 +56,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         # follow users
         if user != self and not self.following.filter(id=user.id).exists():
             self.following.add(user)
+            user.followers.add(self)
             return True
         return False
 
@@ -59,5 +64,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         # unfollow users
         if user != self and self.following.filter(id=user.id).exists():
             self.following.remove(user)
+            user.followers.remove(self)
             return True
         return False
