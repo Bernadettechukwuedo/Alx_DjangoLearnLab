@@ -14,20 +14,20 @@ Django's built-in ViewSet is used to perform CRUD operations. Here, only the use
 Pagination is enabled using Django's built-in pagination, which is configured by default in the settings file.
 
 ### Endpoints for Posts using ViewSet:
-- `POST /posts/posts/` → Create a new post
-- `GET /posts/posts/` → Retrieve all posts
-- `GET /posts/posts/{id}/` → Retrieve a single post by ID
-- `PUT /posts/posts/{id}/` → Update a post (only by the creator)
-- `PATCH /posts/posts/{id}/` → Partially update a post
-- `DELETE /posts/posts/{id}/` → Delete a post (only by the creator)
+- `POST /api/posts/` → Create a new post
+- `GET /api/posts/` → Retrieve all posts
+- `GET /api/posts/{id}/` → Retrieve a single post by ID
+- `PATCH /api/posts/{id}/` → Partially update a post
+- `DELETE /api/posts/{id}/` → Delete a post (only by the creator)
+- `PUT /api/posts/{id}/` → Update a post (only by the creator)
 
 ### Endpoints for Comments using ViewSet:
-- `POST /comments/comments/` → Create a new comment
-- `GET /comments/comments/` → Retrieve all comments
-- `GET /comments/comments/{id}/` → Retrieve a single comment by ID
-- `PUT /comments/comments/{id}/` → Update a comment (only by the creator)
-- `PATCH /comments/comments/{id}/` → Partially update a comment
-- `DELETE /comments/comments/{id}/` → Delete a comment (only by the creator)
+- `POST /api/comments/` → Create a new comment
+- `GET /api/comments/` → Retrieve all comments
+- `GET /api/comments/{id}/` → Retrieve a single comment by ID
+- `PUT /api/comments/{id}/` → Update a comment (only by the creator)
+- `PATCH /api/comments/{id}/` → Partially update a comment
+- `DELETE /api/comments/{id}/` → Delete a comment (only by the creator)
 
 ### Filtering and Searching:
 Users can filter posts based on keywords, full titles, or content using the search feature.
