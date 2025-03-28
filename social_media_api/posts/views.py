@@ -4,10 +4,14 @@ from rest_framework import viewsets
 from .models import Post, Comment
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import IsAuthorOrReadOnly
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework import serializers, filters, response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.views import APIView
+from django.contrib.contenttypes.models import ContentType
+from .models import Like, Post
+from notifications.models import Notification
 
 # Create your views here.
 """
@@ -49,7 +53,9 @@ class PostViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(author=self.request.user)
 
-    @action(detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated])
+    @action(
+        detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated]
+    )
     def feed(self, request):
 
         following_users = request.user.following.all()
@@ -96,3 +102,47 @@ def feed_posts(request):
     posts = Post.objects.filter(author__in=followed_users).order_by("-created_at")
     serializer = PostSerializer(posts, many=True)
     return response.Response({"posts": serializer.data})
+
+
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        """Like a post if not already liked"""
+        post = Post.objects.get(id=pk)
+        like, created = Like.objects.get_or_create(author=request.user, post=post)
+
+        if created:
+            # Send notification to post author
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target_content_type=ContentType.objects.get_for_model(post),
+                target_object_id=post.id,
+            )
+            return response.Response(
+                {"message": "Post liked!"}, status=status.HTTP_201_CREATED
+            )
+        return response.Response(
+            {"message": "You have already liked this post."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class UnlikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        """Unlike a post if previously liked"""
+        try:
+            like = Like.objects.get(author=request.user, id=pk)
+            like.delete()
+            return response.Response(
+                {"message": "Post unliked."}, status=status.HTTP_204_NO_CONTENT
+            )
+        except Like.DoesNotExist:
+            return response.Response(
+                {"message": "You haven't liked this post yet."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

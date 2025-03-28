@@ -12,7 +12,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.author.username} - {self.title}"
+        return f"{self.author.email} - {self.title}"
 
 
 class Comment(models.Model):
@@ -23,4 +23,17 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Coment by {self.author.username} on {self.post.title}"
+        return f"Coment by {self.author.email} on {self.post.title}"
+
+
+class Like(models.Model):
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, default=1, related_name="likes"
+    )
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("author", "post")  # Ensures a user can like a post only once
+
+    def __str__(self):
+        return f"{self.author.email} liked {self.post.title}"
