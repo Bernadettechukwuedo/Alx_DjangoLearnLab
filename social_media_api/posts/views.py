@@ -109,7 +109,7 @@ class LikePostView(APIView):
 
     def post(self, request, pk):
         """Like a post if not already liked"""
-        post = generics.get_object_or_404(id=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         like, created = Like.objects.get_or_create(user=request.user, post=post)
 
         if created:
