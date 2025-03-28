@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from .models import Post, Comment
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .permissions import IsAuthorOrReadOnly
-from rest_framework import permissions, status
+from rest_framework import permissions, status, generics
 from rest_framework import serializers, filters, response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action, api_view, permission_classes
@@ -109,8 +109,8 @@ class LikePostView(APIView):
 
     def post(self, request, pk):
         """Like a post if not already liked"""
-        post = Post.objects.get(id=pk)
-        like, created = Like.objects.get_or_create(author=request.user, post=post)
+        post = generics.get_object_or_404(id=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
 
         if created:
             # Send notification to post author
